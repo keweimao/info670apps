@@ -1,12 +1,14 @@
 import React, {useState} from 'react'; 
-import { AppRegistry } from 'react-native';
+import {AppRegistry} from 'react-native'; 
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import { PaperProvider, MD3LightTheme as DefaultTheme} from 'react-native-paper';
 import { StatusBar } from 'expo-status-bar';
-import { PaperProvider, MD3LightTheme as DefaultTheme } from 'react-native-paper';
-import { StyleSheet, View, Image, ScrollView } from 'react-native';
-import { Button, Text, TextInput } from 'react-native-paper'; 
-import MessageList from './ui/MessageList';
+import { StyleSheet, View, Image, ScrollView  } from 'react-native';
+import {Button, Text, TextInput, Card, Avatar, IconButton } from 'react-native-paper'; 
+// import Message from './components/Message'; 
+import MessageList from './components/MessageList';
+// import ChatScreen from './components/ChatScreen';
 import {name as appName} from './app.json'; 
 
 const theme = {
@@ -15,50 +17,61 @@ const theme = {
     ...DefaultTheme.colors, 
     primary: 'blue', 
     secondary: 'skyblue', 
-  }
+  }, 
 }
 
-const ChatScreen = ( (navigation) => {
-  return (
-    <PaperProvider theme={theme}>
-      <View style={styles.container}>
-        <MessageList />
-      </View>
-      <Button
-        onPress={() => navigation.navigate('Next')}
-      >Go Next!</Button>
-    </PaperProvider>
-  );
-})
-
-const NextScreen = ( (navigation) => {
-  return (
-    <PaperProvider theme={theme}>
-      <View>
-        <Text>This is the Next Screen.</Text>
-      </View>
-    </PaperProvider>
-  );
-})
-
 const Stack = createNativeStackNavigator(); 
+
+// const [name, setName] = useState('');
+
+const ChatScreen = ({navigation}) => {
+  const [name, setName] = useState('');
+  return (
+      <PaperProvider theme={theme}>
+        <MessageList />
+        <TextInput 
+                  placeholder="Your Name" 
+                  defaultValue={name} 
+                  onChangeText = { newText => setName(newText)}
+        />
+        <Button 
+          onPress={()=> navigation.navigate('Next', {name: name})}
+        >Go NEXT!</Button>
+      </PaperProvider>
+  );
+}
+
+const NextScreen = ({navigation, route}) => {
+  return (
+      <PaperProvider theme={theme}>
+        <View>
+          {route.params.name!=''?
+          <Text>{route.params.name} is NEXT. </Text>
+          :
+          <Text>NOTHING is NEXT. </Text>
+          }
+        </View>
+      </PaperProvider>
+  );
+}
+
 export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen 
+      <Stack.Screen 
           name="Chat"
           component={ChatScreen}
           options={{title:"Welcome!"}}
         />
-        <Stack.Screen 
+        <Stack.Screen
           name="Next"
           component={NextScreen}
           options={{title:"Another Screen"}}
         />
       </Stack.Navigator>
     </NavigationContainer>
-  ); 
+  );
 }
 
 AppRegistry.registerComponent(appName, () => App); 
