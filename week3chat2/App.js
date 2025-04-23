@@ -1,67 +1,72 @@
 import React, {useState} from 'react'; 
-import { AppRegistry } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { StatusBar } from 'expo-status-bar';
-import { PaperProvider, MD3LightTheme as DefaultTheme } from 'react-native-paper';
-import { StyleSheet, View, Image, ScrollView } from 'react-native';
-import { Button, Text, TextInput } from 'react-native-paper'; 
-import MessageList from './ui/MessageList';
-import {name as appName} from './app.json'; 
+import { StyleSheet, Text, View, TextInput, Image, Button, ScrollView } from 'react-native';
+// import {Avatar} from 'react-native-elements'; 
 
-const theme = {
-  ...DefaultTheme, 
-  colors: {
-    ...DefaultTheme.colors, 
-    primary: 'blue', 
-    secondary: 'skyblue', 
-  }
-}
-
-const ChatScreen = ( (navigation) => {
-  return (
-    <PaperProvider theme={theme}>
-      <View style={styles.container}>
-        <MessageList />
-      </View>
-      <Button
-        onPress={() => navigation.navigate('Next')}
-      >Go Next!</Button>
-    </PaperProvider>
-  );
-})
-
-const NextScreen = ( (navigation) => {
-  return (
-    <PaperProvider theme={theme}>
-      <View>
-        <Text>This is the Next Screen.</Text>
-      </View>
-    </PaperProvider>
-  );
-})
-
-const Stack = createNativeStackNavigator(); 
 export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen 
-          name="Chat"
-          component={ChatScreen}
-          options={{title:"Welcome!"}}
+    <View style={styles.container}>
+      <MessageList />
+      {/* <Text>Open up App.js to start working on your app!</Text>
+      <StatusBar style="auto" /> */}
+    </View>
+  );
+}
+
+const MessageList = () => {
+  const [text, setText] = useState('');
+  const [texts, setTexts] = useState(['Roger!', 'Roger back!']); 
+
+  return (
+    <ScrollView 
+    style={[
+        styles.shadow, 
+        {
+          // flex:1, 
+          // flexDirection: 'column'
+          flexGrow: 0, 
+          position: 'absolute', 
+          left: 0, 
+          right: 0, 
+          top: 0, 
+          paddingVertical: 30, 
+        },
+      ]}>
+      <Message text="First message." />
+      <Message text="Second message." />
+      {texts.map( (text, index) => (<Message key={index} text={text} />) )}
+      <View>
+        <TextInput 
+          placeholder="Enter your message here2..." 
+          defaultValue={text} 
+          onChangeText = { newText => setText(newText)}
+          />
+        <Button title="Send" 
+          onPress = {() => {
+            setTexts([...texts, text]);
+            setText('');
+          }}
         />
-        <Stack.Screen 
-          name="Next"
-          component={NextScreen}
-          options={{title:"Another Screen"}}
-        />
-      </Stack.Navigator>
-    </NavigationContainer>
+      </View>
+    </ScrollView>
   ); 
 }
 
-AppRegistry.registerComponent(appName, () => App); 
+const Message = props => {
+  return (
+    <View style={[
+        styles.messageContainer,
+        {
+          alignItems: 'center', 
+          marginHorizontal: 5, 
+          marginVertical: 2
+        }
+      ]}>
+      <Image source={require('./img/favicon.png')} style={{width:20, height:20, margin:5}} />
+      <Text>{props.text}</Text>
+    </View>
+  ); 
+}
 
 const styles = StyleSheet.create({
   container: {
