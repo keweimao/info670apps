@@ -1,94 +1,62 @@
-import React, {useState} from 'react'; 
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, TextInput, Image, Button, ScrollView } from 'react-native';
-// import {Avatar} from 'react-native-elements'; 
+import React, {Component} from 'react';
+import {StyleSheet, View, Text, Image, Button, Alert} from 'react-native';
 
-export default function App() {
-  return (
-    <View style={styles.container}>
-      <MessageList />
-      {/* <Text>Open up App.js to start working on your app!</Text>
-      <StatusBar style="auto" /> */}
-    </View>
-  );
-}
+// const Flex = () => {
+export default class Flex extends Component {
+  _onPressButton = () => {
+    console.log("Button pressed!");
+    Alert.alert('You tapped the button!');
+  }
 
-const MessageList = () => {
-  const [text, setText] = useState('');
-  const [texts, setTexts] = useState(['Roger!', 'Roger back!']); 
+  render(){
+    return (
+      <View
+        style={[
+          styles.container,
+          {
+              // Try setting `flexDirection` to `"row"`.
+              flexDirection: 'column',
+              // flexDirection: 'row',
+            },
+          ]}>
+          <View style={{flex: 1, backgroundColor: 'red',  alignItems: 'center', justifyContent: 'center'}}>
+            <Text style={[styles.label]}>Welcome! </Text>
+          </View>
+          <View style={{flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: 'darkorange'}}>
+            <Image source={require('./assets/icon.png')} style={{width:40, height:40}} />
+            <Text>This is an Icon</Text>
+            <Button onPress={this._onPressButton} title="Press Me" style={styles.buttonContainer} />
+          </View>
+          <View style={{flex: 1, flexDirection: 'row', backgroundColor: 'green'}}> 
+            <Button onPress={this._onPressButton} title="Press Me Too" style={styles.alternativeLayoutButtonContainer} />
+            <Button onPress={this._onPressButton} title="Press Me Three" style={styles.alternativeLayoutButtonContainer} />
+          </View>
+        </View>
+      );
+    }
+  }
 
-  return (
-    <ScrollView 
-    style={[
-        styles.shadow, 
-        {
-          // flex:1, 
-          // flexDirection: 'column'
-          flexGrow: 0, 
-          position: 'absolute', 
-          left: 0, 
-          right: 0, 
-          top: 0, 
-          paddingVertical: 30, 
-        },
-      ]}>
-      <Message text="First message." />
-      <Message text="Second message." />
-      {texts.map( (text, index) => (<Message key={index} text={text} />) )}
-      <View>
-        <TextInput 
-          placeholder="Enter your message here2..." 
-          defaultValue={text} 
-          onChangeText = { newText => setText(newText)}
-          />
-        <Button title="Send" 
-          onPress = {() => {
-            setTexts([...texts, text]);
-            setText('');
-          }}
-        />
-      </View>
-    </ScrollView>
-  ); 
-}
-
-const Message = props => {
-  return (
-    <View style={[
-        styles.messageContainer,
-        {
-          alignItems: 'center', 
-          marginHorizontal: 5, 
-          marginVertical: 2
-        }
-      ]}>
-      <Image source={require('./img/favicon.png')} style={{width:20, height:20, margin:5}} />
-      <Text>{props.text}</Text>
-    </View>
-  ); 
-}
+ 
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'flex-start',
-    justifyContent: 'flex-start',
+    padding: 20,
   },
-  messageContainer: {
-    flex: 1, 
-    flexDirection: 'row', 
-    backgroundColor: 'skyblue', 
-    alignItems: 'flex-start', 
-    justifyContent: 'flex-start',
+  heading: {
+    fontWeight: 'bold', 
+    fontSize: 40, 
   }, 
-  shadow: {
-    shadowColor: '#171717', 
-    shadowOffsetWidth: 0, 
-    shadowOffsetHeight: 2, 
-    shadowOpacity: 0.2, 
-    shadowRadius: 3, 
-    backgroundColor: 'white', 
-    zIndex: 9999, 
-  }
+  label: {
+    fontWeight: 'bold', 
+    fontSize: 20, 
+  }, 
+  buttonContainer: {
+    margin: 20,
+  },
+  alternativeLayoutButtonContainer: {
+    margin: 20,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
 });
